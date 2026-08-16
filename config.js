@@ -21,6 +21,12 @@ module.exports = {
 
   // Default messages (can be customized per-guild)
   defaultMessages: {
+    // Channel confirmation when someone is successfully ServerBlocked
+    // Supports type: "text" or "embed". Variables: {mention} {userid} {username} {reason} {case_id} {moderator} {server} etc.
+    sbSuccess: {
+      type: 'text',
+      content: '✔️ {mention} was successfully serverblocked.',
+    },
     sbDm: {
       type: 'embed',
       title: '🚫 You Have Been Server Blocked',

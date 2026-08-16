@@ -101,7 +101,19 @@ async function createSB(client, guild, moderator, targetUserId, reason) {
   });
 
   const isInServer = !!member;
-  const confirmation = messages.fixedSbConfirmation(targetUserId, isInServer);
+  const vars = messages.getVars({
+    user: user || null,
+    userId: targetUserId,
+    moderator,
+    guild,
+    reason: reason.trim(),
+    caseId,
+    isInServer,
+    appealLink: config.appealUrl || '',
+  });
+
+  // Fully customizable channel confirmation (text or embed)
+  const confirmation = messages.renderSbSuccess(guild.id, vars);
 
   return {
     success: true,
@@ -111,6 +123,7 @@ async function createSB(client, guild, moderator, targetUserId, reason) {
     failedRoles,
     dmResult,
     user,
+    vars,
   };
 }
 

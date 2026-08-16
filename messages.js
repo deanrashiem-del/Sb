@@ -1,15 +1,21 @@
 const config = require('./config');
 const db = require('./database');
 const { buildEmbedFromConfig, getMessage, replaceVariables } = require('./utils');
-const { EmbedBuilder } = require('discord.js');
 
-function getVars({ user, moderator, guild, reason, caseId, status, appealLink }) {
+function getVars({ user, userId, moderator, guild, reason, caseId, status, appealLink, isInServer }) {
   const now = new Date();
+  const id = user?.id || userId || '';
+  const username = user?.username || user?.tag || id || 'Unknown';
+  // Prefer mention when we know they're in the server or we have a full user object
+  const mention = id
+    ? (isInServer || user ? `<@${id}>` : id)
+    : 'Unknown';
+
   return {
-    user: user ? (user.username || user.tag || user.id) : 'Unknown',
-    username: user ? (user.username || 'Unknown') : 'Unknown',
-    userid: user ? user.id : '',
-    mention: user ? `<@${user.id}>` : '',
+    user: username,
+    username,
+    userid: id,
+    mention,
     reason: reason || 'No reason provided',
     moderator: moderator ? (moderator.username || moderator.tag || moderator.id) : 'Unknown',
     moderator_id: moderator ? moderator.id : '',
@@ -36,6 +42,15 @@ function renderMessage(guildId, key, vars = {}) {
   return buildEmbedFromConfig(msgConfig, vars);
 }
 
+/**
+ * Build the channel success confirmation for a ServerBlock.
+ * Fully customizable via /config → Messages → SB Success.
+ * Supports text or embed and all standard variables.
+ */
+function renderSbSuccess(guildId, vars = {}) {
+  return renderMessage(guildId, 'sbSuccess', vars);
+}
+
 async function sendDm(user, guildId, key, vars = {}) {
   const gConfig = db.getGuildConfig(guildId);
   if (!gConfig.dmUsers) return { success: false, reason: 'dms_disabled_in_config' };
@@ -49,17 +64,10 @@ async function sendDm(user, guildId, key, vars = {}) {
   }
 }
 
-function fixedSbConfirmation(userId, isInServer) {
-  if (isInServer) {
-    return `✔️ <@${userId}> was successfully serverblocked.`;
-  }
-  return `✔️ ${userId} was successfully serverblocked.`;
-}
-
 module.exports = {
   getVars,
   getGuildMessage,
   renderMessage,
+  renderSbSuccess,
   sendDm,
-  fixedSbConfirmation,
 };

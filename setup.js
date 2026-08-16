@@ -290,6 +290,7 @@ function buildCheckerEmbed(guild) {
 
 function buildMessagesMenu() {
   const options = [
+    { label: 'SB Success (channel)', value: 'sbSuccess', description: 'Message sent in channel when SB succeeds' },
     { label: 'SB DM', value: 'sbDm', description: 'DM sent when a user is serverblocked' },
     { label: 'Already Blocked', value: 'alreadyBlocked' },
     { label: 'Missing Reason', value: 'missingReason' },

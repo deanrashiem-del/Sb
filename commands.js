@@ -242,13 +242,11 @@ async function cmdSb(ctx, args, client) {
     return reply(ctx, { content: '❌ Failed to create ServerBlock.' });
   }
 
-  // Fixed confirmation — never customized
-  await reply(ctx, { content: result.confirmation });
+  // Customizable channel confirmation (text or embed via /config → Messages → SB Success)
+  await reply(ctx, result.confirmation);
 
   if (result.failedRoles?.length) {
     for (const rid of result.failedRoles) {
-      const roleMsg = messages.renderMessage(guild.id, 'roleHierarchy', {});
-      // Send a soft warning
       try {
         await ctx.channel.send(`⚠️ Could not assign <@&${rid}> (role hierarchy).`);
       } catch {}
@@ -257,7 +255,8 @@ async function cmdSb(ctx, args, client) {
 
   if (result.dmResult && !result.dmResult.success && result.dmResult.reason === 'dm_blocked') {
     try {
-      await ctx.channel.send(messages.renderMessage(guild.id, 'dmDisabled', {}).content || '⚠️ Could not DM the user.');
+      const dmMsg = messages.renderMessage(guild.id, 'dmDisabled', {});
+      await ctx.channel.send(dmMsg.content || dmMsg.embeds ? dmMsg : { content: '⚠️ Could not DM the user.' });
     } catch {}
   }
 }
