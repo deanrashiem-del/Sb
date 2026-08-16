@@ -1,0 +1,25 @@
+{
+  "name": "serverblock",
+  "version": "1.0.0",
+  "description": "Professional Discord ServerBlock moderation bot with persistent SQLite storage",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "moderation",
+    "serverblock"
+  ],
+  "author": "ServerBlock",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "^16.4.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
